@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: "Segoe UI", sans-serif;
-  background: url('https://https://images.unsplash.com/photo-1659766472587-2d3064664f36?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+  background: url('https://images.unsplash.com/photo-1659766472587-2d3064664f36?auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
   background-size: cover;
   display: flex;
   justify-content: center;
