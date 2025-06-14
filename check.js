@@ -23,7 +23,7 @@ if (version) {
     document.getElementById("status").innerHTML = `
       <span class="vulnerable">
         Your Chrome version <strong>${versionString}</strong> is vulnerable to CVE-2025-5419.<br>
-        Please <a href="chrome://settings/help">update Chrome</a> immediately.
+        To update, open a new Chrome tab, paste <code>chrome://settings/help</code> into the address bar, and hit Enter.
       </span>
     `;
   } else {
