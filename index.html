@@ -1,17 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Chrome CVE-2025-5419 Checker</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chrome V8 CVE Vulnerability Checker</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Chrome CVE-2025-5419 Vulnerability Checker</h1>
+    <h1>🔍 Chrome V8 CVE Vulnerability Checker</h1>
+    <p>This tool checks your browser against known 2025 Chrome 0-days:</p>
+    <ul>
+      <li><strong>CVE-2025-5419</strong> – Out-of-bounds memory issue</li>
+      <li><strong>CVE-2025-6554</strong> – Type confusion bug</li>
+    </ul>
+
     <p id="version"></p>
     <p id="status"></p>
+    <div id="note"></div>
   </div>
+
   <script src="check.js"></script>
 </body>
 </html>
-
