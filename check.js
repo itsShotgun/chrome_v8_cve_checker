@@ -10,15 +10,19 @@ function parseChromeVersion() {
   return { major, minor, build, patch };
 }
 
-function isVulnerable(version) {
-  // If build and patch are zero, assume safe to avoid false positives (common on macOS)
-  if (version.build === 0 && version.patch === 0) return false;
-
-  // Vulnerable if version < 137.0.7151.68
+function isVulnerableTo5419(v) {
   return (
-    version.major < 137 ||
-    (version.major === 137 && version.build < 7151) ||
-    (version.major === 137 && version.build === 7151 && version.patch < 68)
+    v.major < 137 ||
+    (v.major === 137 && v.build < 7151) ||
+    (v.major === 137 && v.build === 7151 && v.patch < 68)
+  );
+}
+
+function isVulnerableTo6554(v) {
+  return (
+    v.major < 138 ||
+    (v.major === 138 && v.build < 7204) ||
+    (v.major === 138 && v.build === 7204 && v.patch < 96)
   );
 }
 
@@ -28,19 +32,21 @@ if (version) {
   const display = `Detected Chrome Version: ${version.major}.${version.minor}.${version.build}.${version.patch}`;
   document.getElementById("version").textContent = display;
 
-  if (isVulnerable(version)) {
-    document.getElementById("status").innerHTML = `<strong class="vulnerable">Your Chrome version ${version.major}.${version.minor}.${version.build}.${version.patch} is vulnerable to CVE-2025-5419.<br> Please update your Chrome immediately.<br><a href="chrome://settings/help" target="_blank" rel="noopener noreferrer">Update Chrome now</a></strong>`;
-  } else {
-    document.getElementById("status").innerHTML = `<strong class="safe">Good news! Your Chrome version appears safe. Thanks for keeping it updated.</strong>`;
-  }
+  const vulnerable5419 = isVulnerableTo5419(version);
+  const vulnerable6554 = isVulnerableTo6554(version);
+  let vulnMessage = "";
 
-  // macOS version detection warning
   if (version.build === 0 && version.patch === 0) {
-    const note = document.createElement("p");
-    note.style.color = "#ffd166";
-    note.style.marginTop = "1em";
-    note.innerHTML = "⚠️ Note: On macOS, Chrome sometimes reports partial version info. If you're unsure, please manually check via <code>chrome://settings/help</code>.";
-    document.body.appendChild(note);
+    // macOS version anomaly
+    document.getElementById("status").innerHTML = `<strong class="safe">⚠️ Unable to confirm full version details on macOS. Please check manually at <code>chrome://settings/help</code>.</strong>`;
+  } else if (vulnerable5419 || vulnerable6554) {
+    vulnMessage += `<strong class="vulnerable">Your Chrome version ${version.major}.${version.minor}.${version.build}.${version.patch} is vulnerable to:</strong><br>`;
+    if (vulnerable5419) vulnMessage += `• CVE-2025-5419 (Out-of-bounds memory bug in V8)<br>`;
+    if (vulnerable6554) vulnMessage += `• CVE-2025-6554 (Type confusion in V8)<br>`;
+    vulnMessage += `<br><a href="chrome://settings/help" target="_blank" rel="noopener noreferrer">Update Chrome now</a>`;
+    document.getElementById("status").innerHTML = vulnMessage;
+  } else {
+    document.getElementById("status").innerHTML = `<strong class="safe">✅ Good news! Your Chrome version is safe from CVE-2025-5419 and CVE-2025-6554. Thanks for keeping it updated.</strong>`;
   }
 } else {
   document.getElementById("status").textContent = "Could not detect Chrome version. Are you using Chrome?";
